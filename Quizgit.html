@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Game</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="quiz-container">
+        <h1>Quiz Game</h1>
+        <div id="question">Loading question...</div>
+        <div id="answers">
+            <!-- Answers will be dynamically loaded here -->
+        </div>
+        <button id="next-btn" style="display: none;">Next Question</button>
+        <div id="score" style="display: none;">Your score: 0</div>
+    </div>
+
+    <script>
+        // JavaScript code for Quiz Game
+        const quizData = [
+            {
+                question: "What is the capital of France?",
+                answers: ["Berlin", "Madrid", "Paris", "Lisbon"],
+                correct: 2
+            },
+            {
+                question: "Which planet is known as the Red Planet?",
+                answers: ["Earth", "Mars", "Jupiter", "Venus"],
+                correct: 1
+            },
+            {
+                question: "What is the largest mammal?",
+                answers: ["Elephant", "Blue Whale", "Giraffe", "Hippopotamus"],
+                correct: 1
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+
+        const questionEl = document.getElementById("question");
+        const answersEl = document.getElementById("answers");
+        const nextBtn = document.getElementById("next-btn");
+        const scoreEl = document.getElementById("score");
+
+        function loadQuestion() {
+            const currentQuestion = quizData[currentQuestionIndex];
+            questionEl.textContent = currentQuestion.question;
+            answersEl.innerHTML = "";
+
+            currentQuestion.answers.forEach((answer, index) => {
+                const button = document.createElement("button");
+                button.textContent = answer;
+                button.classList.add("answer-btn");
+                button.addEventListener("click", () => selectAnswer(index));
+                answersEl.appendChild(button);
+            });
+
+            nextBtn.style.display = "none";
+        }
+
+        function selectAnswer(index) {
+            const currentQuestion = quizData[currentQuestionIndex];
+            const buttons = document.querySelectorAll(".answer-btn");
+            buttons.forEach((button, btnIndex) => {
+                if (btnIndex === currentQuestion.correct) {
+                    button.classList.add("correct");
+                } else {
+                    button.classList.add("wrong");
+                }
+                button.disabled = true;
+            });
+
+            if (index === currentQuestion.correct) {
+                score++;
+            }
+
+            nextBtn.style.display = "block";
+        }
+
+        function showScore() {
+            questionEl.style.display = "none";
+            answersEl.style.display = "none";
+            nextBtn.style.display = "none";
+            scoreEl.style.display = "block";
+            scoreEl.textContent = Your score: ${score}/${quizData.length};
+        }
+
+        nextBtn.addEventListener("click", () => {
+            currentQuestionIndex++;
+            if (currentQuestionIndex < quizData.length) {
+                loadQuestion();
+            } else {
+                showScore();
+            }
+        });
+
+        loadQuestion();
+    </script>
+</body>
+</html>
